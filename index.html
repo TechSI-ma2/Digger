@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Digger - Tech.SI | Created by Arsalan Nasir</title>
+  <meta name="description" content="Responsive browser-based Digger mini-game by Tech.SI, created by Arsalan Nasir. Smooth controls, retro chiptune audio, and mobile touch interface.">
+  
+  <!-- Retro Arcade Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app-container">
+    <!-- Header / HUD Status Bar -->
+    <header id="arcade-header">
+      <div class="brand-section">
+        <h1 class="game-title">DIGGER</h1>
+        <span class="version-tag">Tech.SI</span>
+        <span class="creator-tag">by Arsalan Nasir</span>
+      </div>
+
+      <div id="hud-bar">
+        <div class="hud-item">
+          <span class="hud-label">SCORE</span>
+          <span id="hud-score" class="hud-value gold">0</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">HI-SCORE</span>
+          <span id="hud-high-score" class="hud-value">0</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">LEVEL</span>
+          <span id="hud-level" class="hud-value">1</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">LIVES</span>
+          <div id="hud-lives" class="hud-value"><span class="life-icon">🚜</span><span class="life-icon">🚜</span><span class="life-icon">🚜</span></div>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">WEAPON</span>
+          <span id="hud-weapon" class="hud-value ready">READY</span>
+        </div>
+      </div>
+
+      <div id="toolbar-controls">
+        <button id="btn-sound" class="tool-btn" title="Toggle Sound FX">
+          <span id="sound-icon">🔊</span>
+        </button>
+        <button id="btn-music" class="tool-btn" title="Toggle Music">
+          <span id="music-icon">🎵</span>
+        </button>
+        <button id="btn-palette" class="tool-btn" title="Toggle Palette (Vibrant / CGA Retro)">
+          🎨 <span id="palette-text">VIBRANT</span>
+        </button>
+        <button id="btn-crt" class="tool-btn" title="Toggle CRT Filter">
+          📺 <span>CRT</span>
+        </button>
+        <button id="btn-pause" class="tool-btn" title="Pause Game">
+          ⏸️
+        </button>
+        <button id="btn-leaderboard" class="tool-btn" title="High Scores">
+          🏆
+        </button>
+        <button id="btn-help" class="tool-btn" title="Instructions & Controls">
+          ❓
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Game Viewport -->
+    <main id="main-stage">
+      <div id="game-wrapper" class="crt-effect">
+        <div id="canvas-container">
+          <canvas id="game-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Virtual Controller for Mobile Devices & Touch -->
+      <div id="virtual-gamepad">
+        <div class="dpad-container">
+          <div class="dpad-cross">
+            <button id="btn-up" class="dpad-btn dpad-up" aria-label="Up">▲</button>
+            <button id="btn-down" class="dpad-btn dpad-down" aria-label="Down">▼</button>
+            <button id="btn-left" class="dpad-btn dpad-left" aria-label="Left">◀</button>
+            <button id="btn-right" class="dpad-btn dpad-right" aria-label="Right">▶</button>
+            <div class="dpad-center"></div>
+          </div>
+        </div>
+
+        <div class="action-container">
+          <div class="action-btn-wrapper">
+            <button id="btn-fire" class="fire-btn" aria-label="Fire Weapon">
+              <span>FIRE</span>
+              <div id="fire-charge-fill" class="fire-charge-fill"></div>
+            </button>
+          </div>
+          <span class="action-label">WEAPON</span>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal: Start / Title Screen -->
+    <div id="modal-start" class="game-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">DIGGER &bull; TECH.SI</h2>
+          <p class="modal-subtitle">Created by Arsalan Nasir</p>
+        </div>
+        <div class="modal-body">
+          <p>Guide your Digger vehicle through underground mines, collect sparkling emeralds, drop bags of gold to squash enemies, and blast monsters with your rechargeable fireball!</p>
+          
+          <h4>🎮 CONTROLS</h4>
+          <ul>
+            <li><strong>Desktop:</strong> Arrow Keys / WASD to move &bull; Space / F / Enter to Fire</li>
+            <li><strong>Mobile:</strong> Virtual D-Pad / Buttons or swipe directly on the screen</li>
+            <li><strong>Hotkeys:</strong> P to Pause &bull; M to Toggle Music</li>
+          </ul>
+
+          <h4>✨ SCORING</h4>
+          <div class="rules-grid">
+            <div class="rule-card">
+              <div class="rule-card-title">💎 EMERALD</div>
+              <p>25 PTS each. Eat 8 in a row without pause for an <strong>OCTAVE BONUS (+250 PTS)!</strong></p>
+            </div>
+            <div class="rule-card">
+              <div class="rule-card-title">💰 GOLD BAG</div>
+              <p>Push or drop on monsters to crush them. Shattered gold bags grant <strong>500 PTS!</strong></p>
+            </div>
+            <div class="rule-card">
+              <div class="rule-card-title">👾 MONSTERS</div>
+              <p>Nobbins (red) mutate into burrowing Hobbins (green). Destroy for <strong>250 PTS!</strong></p>
+            </div>
+            <div class="rule-card">
+              <div class="rule-card-title">🍒 BONUS CHERRY</div>
+              <p>Eat the cherry for Bonus Mode (William Tell Overture!) and eat blue monsters for up to <strong>800 PTS!</strong></p>
+            </div>
+          </div>
+        </div>
+        <button id="btn-start-game" class="btn-primary">START GAME</button>
+      </div>
+    </div>
+
+    <!-- Modal: How to Play / Help -->
+    <div id="modal-help" class="game-modal hidden">
+      <div class="modal-content">
+        <button class="modal-close-btn">&times;</button>
+        <div class="modal-header">
+          <h2 class="modal-title">HOW TO PLAY</h2>
+          <p class="modal-subtitle">Rules, Tactics & Tips</p>
+        </div>
+        <div class="modal-body">
+          <h4>OBJECTIVE</h4>
+          <p>Clear each stage by collecting <strong>all emeralds</strong> or eliminating <strong>all monsters</strong>. An extra life is awarded at 20,000 points!</p>
+
+          <h4>TACTICS & SURVIVAL</h4>
+          <ul>
+            <li><strong>Gold Bag Drops:</strong> Dig underneath a gold bag to make it wobble and fall down the shaft. Any monster underneath will be crushed instantly!</li>
+            <li><strong>Pushing Bags:</strong> Walk into a bag horizontally to push it across open tunnels. You can drop it down vertical tunnels on unsuspecting pursuers.</li>
+            <li><strong>Hobbins Threat:</strong> Nobbins eventually turn into fierce green Hobbins with teeth. Hobbins chew through dirt directly towards you and eat your emeralds!</li>
+            <li><strong>Rechargeable Fireball:</strong> Press Fire (Space/Button) to launch a shot down the tunnel. The weapon takes ~8.5 seconds to recharge—use it wisely!</li>
+            <li><strong>Bonus Cherry:</strong> When all monsters for a level have entered the mine, a Cherry appears at the top-right spawner. Collect it to turn monsters blue and hunt them down!</li>
+          </ul>
+        </div>
+        <button class="btn-primary modal-close-btn-bottom modal-close-btn">BACK TO GAME</button>
+      </div>
+    </div>
+
+    <!-- Modal: High Scores / Leaderboard -->
+    <div id="modal-leaderboard" class="game-modal hidden">
+      <div class="modal-content">
+        <button class="modal-close-btn">&times;</button>
+        <div class="modal-header">
+          <h2 class="modal-title">HALL OF FAME</h2>
+          <p class="modal-subtitle">Top Scores on this Device</p>
+        </div>
+        <div class="modal-body">
+          <div id="leaderboard-list">
+            <!-- Populated via JavaScript -->
+          </div>
+        </div>
+        <button class="btn-primary modal-close-btn-bottom modal-close-btn">CLOSE</button>
+      </div>
+    </div>
+
+    <!-- Modal: Game Over -->
+    <div id="modal-gameover" class="game-modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" style="color: var(--accent-red);">GAME OVER</h2>
+          <p class="modal-subtitle">The mine has claimed another digger!</p>
+        </div>
+        <div class="modal-body" style="text-align: center;">
+          <div style="font-size: 28px; font-family: var(--font-retro); color: var(--accent-gold); margin: 15px 0;">
+            <span id="gameover-score">0</span> <span style="font-size: 14px;">PTS</span>
+          </div>
+          <p>Reached Stage: <strong id="gameover-level">1</strong></p>
+          <div id="new-high-badge" class="high-score-badge" style="display: none;">★ NEW HIGH SCORE! ★</div>
+        </div>
+        <button id="btn-restart-game" class="btn-primary">PLAY AGAIN</button>
+      </div>
+    </div>
+
+    <!-- Modal: Pause -->
+    <div id="modal-pause" class="game-modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">PAUSED</h2>
+          <p class="modal-subtitle">Press P or Resume to continue</p>
+        </div>
+        <button id="btn-resume" class="btn-primary modal-close-btn">RESUME</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/levels.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
